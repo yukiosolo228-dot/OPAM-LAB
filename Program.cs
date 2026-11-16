@@ -93,15 +93,33 @@ namespace Polyclinic
         static void ShowCostTable()
         {
             Console.WriteLine("=== Табулювання показників (залежність часу від кількості пацієнтів у черзі) ===");
+            PrintQueueTimeTable(1.0, 10.0, 1.0);
+        }
+
+        // Обчислення орієнтовного часу обслуговування черги (хв)
+        static double CalculateQueueTime(double patientCount, double baseMinutes)
+        {
+            return patientCount * baseMinutes * (1.0 + 0.05 * patientCount);
+        }
+
+        // Виведення таблиці табулювання часу черги за межами та кроком
+        static void PrintQueueTimeTable(double start, double end, double step)
+        {
+            if (step <= 0 || start > end)
+            {
+                Console.WriteLine("Некоректні межі або крок табулювання.");
+                return;
+            }
+
             double baseMinutes = 15.0;
 
             Console.WriteLine($"{"Пацієнтів у черзі",-20}{"Орієнтовний час (хв)",20}");
             Console.WriteLine(new string('-', 40));
 
-            for (double count = 1.0; count <= 10.0 + 1e-9; count += 1.0)
+            for (double count = start; count <= end + 1e-9; count += step)
             {
-                double totalTime = count * baseMinutes * (1.0 + 0.05 * count);
-                Console.WriteLine($"{count,-20:F0}{totalTime,20:F1}");
+                double totalTime = CalculateQueueTime(count, baseMinutes);
+                Console.WriteLine($"{count,-20:F1}{totalTime,20:F1}");
             }
         }
 

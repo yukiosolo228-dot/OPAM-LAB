@@ -136,7 +136,15 @@ namespace Polyclinic
 
             int rows = ReadInt("Введіть кількість спеціальностей (рядків, 1..20): ", 1, 20);
             int cols = ReadInt("Введіть кількість днів (стовпців, 1..14): ", 1, 14);
+            Console.WriteLine();
 
+            int[,] table = GenerateWorkloadTable(rows, cols);
+            PrintWorkloadTable(table);
+        }
+
+        // Генерація таблиці завантаження спеціальностей випадковими значеннями
+        static int[,] GenerateWorkloadTable(int rows, int cols)
+        {
             int[,] table = new int[rows, cols];
             Random rand = new Random();
 
@@ -146,6 +154,20 @@ namespace Polyclinic
                 {
                     table[r, c] = rand.Next(2, 20);
                 }
+            }
+
+            return table;
+        }
+
+        // Виведення зведеної таблиці та підсумків за рядками і стовпцями
+        static void PrintWorkloadTable(int[,] table)
+        {
+            int rows = table.GetLength(0);
+            int cols = table.GetLength(1);
+            if (rows <= 0 || cols <= 0)
+            {
+                Console.WriteLine("Нема чого виводити.");
+                return;
             }
 
             // Шапка таблиці

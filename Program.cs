@@ -14,48 +14,53 @@ namespace Polyclinic
             bool running = true;
             while (running)
             {
-                Console.WriteLine("=== Поліклініка ===");
-                Console.WriteLine("Користувач: реєстратор_1");
-                Console.WriteLine("1 — показати всі талони (буде пізніше)");
-                Console.WriteLine("2 — додати новий талон (буде пізніше)");
-                Console.WriteLine("3 — довідка про програму");
-                Console.WriteLine("4 — табулювання показників (таблиця)");
-                Console.WriteLine("5 — зведена таблиця талонів за спеціальностями та днями");
-                Console.WriteLine("0 — вихід");
-                Console.Write("Ваш вибір: ");
-
-                string choice = Console.ReadLine();
+                ShowMenu();
+                string? choice = Console.ReadLine();
                 Console.WriteLine();
 
                 switch (choice)
                 {
-                    case "1":
-                    case "2":
-                        Console.WriteLine("Цей пункт з'явиться в наступних лабораторних роботах.");
-                        Pause();
-                        break;
-                    case "3":
-                        ShowAbout();
-                        Pause();
-                        break;
-                    case "4":
-                        ShowCostTable();
-                        Pause();
-                        break;
-                    case "5":
-                        ShowWorkloadTable();
-                        Pause();
-                        break;
-                    case "0":
-                        running = false;
-                        Console.WriteLine("До побачення!");
-                        break;
-                    default:
-                        Console.WriteLine("Немає такого пункту. Спробуйте ще раз.");
-                        Pause();
-                        break;
+                    case "1": ShowStub(); Pause(); break;
+                    case "2": ShowStub(); Pause(); break;
+                    case "3": ShowAbout(); Pause(); break;
+                    case "4": ShowCostTable(); Pause(); break;
+                    case "5": ShowWorkloadTable(); Pause(); break;
+                    case "0": running = false; ShowGoodbye(); break;
+                    default: ShowInvalidChoice(); Pause(); break;
                 }
             }
+        }
+
+        // Головне меню застосунку
+        static void ShowMenu()
+        {
+            Console.WriteLine("=== Поліклініка ===");
+            Console.WriteLine("Користувач: реєстратор_1");
+            Console.WriteLine("1 — показати всі талони (буде пізніше)");
+            Console.WriteLine("2 — додати новий талон (буде пізніше)");
+            Console.WriteLine("3 — довідка про програму");
+            Console.WriteLine("4 — табулювання показників (таблиця)");
+            Console.WriteLine("5 — зведена таблиця талонів за спеціальностями та днями");
+            Console.WriteLine("0 — вихід");
+            Console.Write("Ваш вибір: ");
+        }
+
+        // Повідомлення для пунктів меню в розробці
+        static void ShowStub()
+        {
+            Console.WriteLine("Цей пункт з'явиться в наступних лабораторних роботах.");
+        }
+
+        // Повідомлення про невірний вибір
+        static void ShowInvalidChoice()
+        {
+            Console.WriteLine("Немає такого пункту. Спробуйте ще раз.");
+        }
+
+        // Прощання при виході
+        static void ShowGoodbye()
+        {
+            Console.WriteLine("До побачення!");
         }
 
         // Пауза перед очищенням екрана

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 
 namespace Polyclinic
@@ -93,7 +94,12 @@ namespace Polyclinic
         static void ShowCostTable()
         {
             Console.WriteLine("=== Табулювання показників (залежність часу від кількості пацієнтів у черзі) ===");
-            PrintQueueTimeTable(1.0, 10.0, 1.0);
+            double start = ReadDouble("Введіть початкову кількість пацієнтів (1..50): ", 1, 50);
+            double end = ReadDouble($"Введіть кінцеву кількість пацієнтів ({start}..100): ", start, 100);
+            double step = ReadDouble("Введіть крок табулювання (0.5..20): ", 0.5, 20);
+            Console.WriteLine();
+
+            PrintQueueTimeTable(start, end, step);
         }
 
         // Обчислення орієнтовного часу обслуговування черги (хв)
@@ -128,11 +134,8 @@ namespace Polyclinic
         {
             Console.WriteLine("=== Зведена таблиця: видані талони за спеціальностями та днями ===");
 
-            int rows = ReadPositiveInt("Введіть кількість спеціальностей (рядків): ");
-            if (rows <= 0) return;
-
-            int cols = ReadPositiveInt("Введіть кількість днів (стовпців): ");
-            if (cols <= 0) return;
+            int rows = ReadInt("Введіть кількість спеціальностей (рядків, 1..20): ", 1, 20);
+            int cols = ReadInt("Введіть кількість днів (стовпців, 1..14): ", 1, 14);
 
             int[,] table = new int[rows, cols];
             Random rand = new Random();
@@ -184,16 +187,53 @@ namespace Polyclinic
             Console.WriteLine($"{grandTotal,10}");
         }
 
-        static int ReadPositiveInt(string prompt)
+        // Безпечне введення дійсного числа в заданих межах
+        static double ReadDouble(string prompt, double min, double max)
         {
-            Console.Write(prompt);
-            string input = Console.ReadLine();
-            if (int.TryParse(input, out int result) && result > 0)
+            while (true)
             {
-                return result;
+                Console.Write(prompt);
+                string? input = Console.ReadLine();
+                string normalized = (input ?? "").Trim().Replace(',', '.');
+
+                if (!double.TryParse(normalized, NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
+                {
+                    Console.WriteLine("Помилка: введено не число. Спробуйте ще раз.");
+                    continue;
+                }
+
+                if (value < min || value > max)
+                {
+                    Console.WriteLine($"Помилка: число має бути в межах від {min} до {max}. Спробуйте ще раз.");
+                    continue;
+                }
+
+                return value;
             }
-            Console.WriteLine("Помилка: введено нуль, від'ємне число або не число. Повернення в меню.");
-            return -1;
+        }
+
+        // Безпечне введення цілого числа в заданих межах
+        static int ReadInt(string prompt, int min, int max)
+        {
+            while (true)
+            {
+                Console.Write(prompt);
+                string? input = Console.ReadLine();
+
+                if (!int.TryParse((input ?? "").Trim(), out int value))
+                {
+                    Console.WriteLine("Помилка: введено не ціле число. Спробуйте ще раз.");
+                    continue;
+                }
+
+                if (value < min || value > max)
+                {
+                    Console.WriteLine($"Помилка: число має бути в межах від {min} до {max}. Спробуйте ще раз.");
+                    continue;
+                }
+
+                return value;
+            }
         }
     }
 }

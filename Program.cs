@@ -33,6 +33,7 @@ namespace Polyclinic
                     case "3": ShowAbout(); Pause(); break;
                     case "4": ShowCostTable(); Pause(); break;
                     case "5": ShowWorkloadTable(); Pause(); break;
+                    case "6": ShowStatistics(values, count); Pause(); break;
                     case "0": running = false; ShowGoodbye(); break;
                     default: ShowInvalidChoice(); Pause(); break;
                 }
@@ -49,6 +50,7 @@ namespace Polyclinic
             Console.WriteLine("3 — довідка про програму");
             Console.WriteLine("4 — табулювання показників (таблиця)");
             Console.WriteLine("5 — зведена таблиця талонів за спеціальностями та днями");
+            Console.WriteLine("6 — показати статистику");
             Console.WriteLine("0 — вихід");
             Console.Write("Ваш вибір: ");
         }
@@ -84,6 +86,61 @@ namespace Polyclinic
             {
                 Console.WriteLine($"{i + 1,-6}{values[i],12:F1}");
             }
+        }
+
+        // Пошук найбільшого значення та його індексу через out-параметри
+        static bool TryFindMax(double[] values, int count, out double maxValue, out int maxIndex)
+        {
+            if (count <= 0)
+            {
+                maxValue = 0;
+                maxIndex = -1;
+                return false;
+            }
+
+            maxValue = values[0];
+            maxIndex = 0;
+
+            for (int i = 1; i < count; i++)
+            {
+                if (values[i] > maxValue)
+                {
+                    maxValue = values[i];
+                    maxIndex = i;
+                }
+            }
+
+            return true;
+        }
+
+        // Обчислення суми та середнього значення через out-параметри
+        static void CalculateStatistics(double[] values, int count, out double sum, out double average)
+        {
+            sum = 0;
+            for (int i = 0; i < count; i++)
+            {
+                sum += values[i];
+            }
+
+            average = count > 0 ? sum / count : 0;
+        }
+
+        // Виведення статистики за масивом значень
+        static void ShowStatistics(double[] values, int count)
+        {
+            if (!TryFindMax(values, count, out double maxValue, out int maxIndex))
+            {
+                Console.WriteLine("Статистика недоступна: масив порожній.");
+                return;
+            }
+
+            CalculateStatistics(values, count, out double sum, out double average);
+
+            Console.WriteLine("=== Статистика тривалості прийому ===");
+            Console.WriteLine($"Кількість записів: {count}");
+            Console.WriteLine($"Сума:              {sum:F1} хв");
+            Console.WriteLine($"Середнє значення:  {average:F1} хв");
+            Console.WriteLine($"Найбільше:         {maxValue:F1} хв (номер у списку: {maxIndex + 1})");
         }
 
         // Повідомлення про невірний вибір

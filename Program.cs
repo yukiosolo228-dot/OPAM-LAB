@@ -34,6 +34,18 @@ namespace Polyclinic
                     case "4": ShowCostTable(); Pause(); break;
                     case "5": ShowWorkloadTable(); Pause(); break;
                     case "6": ShowStatistics(values, count); Pause(); break;
+                    case "7":
+                        if (count <= 0)
+                        {
+                            Console.WriteLine("Масив порожній, видаляти нічого.");
+                        }
+                        else
+                        {
+                            int number = ReadInt($"Введіть номер елемента для видалення (1..{Capacity}): ", 1, Capacity);
+                            RemoveAt(values, ref count, number - 1);
+                        }
+                        Pause();
+                        break;
                     case "0": running = false; ShowGoodbye(); break;
                     default: ShowInvalidChoice(); Pause(); break;
                 }
@@ -51,6 +63,7 @@ namespace Polyclinic
             Console.WriteLine("4 — табулювання показників (таблиця)");
             Console.WriteLine("5 — зведена таблиця талонів за спеціальностями та днями");
             Console.WriteLine("6 — показати статистику");
+            Console.WriteLine("7 — видалити значення за номером");
             Console.WriteLine("0 — вихід");
             Console.Write("Ваш вибір: ");
         }
@@ -67,6 +80,25 @@ namespace Polyclinic
             values[count] = newValue;
             count++;
             Console.WriteLine($"Значення {newValue:F1} додано. Усього записів: {count}.");
+        }
+
+        // Видалення елемента за індексом зі зсувом решти вліво
+        static void RemoveAt(double[] values, ref int count, int index)
+        {
+            if (index < 0 || index >= count)
+            {
+                Console.WriteLine("Помилка: неправильний номер елемента. Видалення не виконано.");
+                return;
+            }
+
+            double removed = values[index];
+            for (int i = index; i < count - 1; i++)
+            {
+                values[i] = values[i + 1];
+            }
+
+            count--;
+            Console.WriteLine($"Елемент №{index + 1} ({removed:F1}) видалено. Залишилось записів: {count}.");
         }
 
         // Виведення вмісту масиву до count таблицею з номерами

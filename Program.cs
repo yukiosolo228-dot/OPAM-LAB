@@ -46,6 +46,7 @@ namespace Polyclinic
                         }
                         Pause();
                         break;
+                    case "8": RunReferenceDemo(); Pause(); break;
                     case "0": running = false; ShowGoodbye(); break;
                     default: ShowInvalidChoice(); Pause(); break;
                 }
@@ -64,6 +65,7 @@ namespace Polyclinic
             Console.WriteLine("5 — зведена таблиця талонів за спеціальностями та днями");
             Console.WriteLine("6 — показати статистику");
             Console.WriteLine("7 — видалити значення за номером");
+            Console.WriteLine("8 — демонстрація: значимий і посилальний типи");
             Console.WriteLine("0 — вихід");
             Console.Write("Ваш вибір: ");
         }
@@ -173,6 +175,39 @@ namespace Polyclinic
             Console.WriteLine($"Сума:              {sum:F1} хв");
             Console.WriteLine($"Середнє значення:  {average:F1} хв");
             Console.WriteLine($"Найбільше:         {maxValue:F1} хв (номер у списку: {maxIndex + 1})");
+        }
+
+        // Спроба змінити значимий параметр без ref (змінюється лише копія)
+        static void TryChangeInt(int number)
+        {
+            number += 100;
+        }
+
+        // Зміна першого елемента масиву (масив передається за посиланням)
+        static void ChangeFirstElement(double[] array)
+        {
+            if (array.Length > 0)
+            {
+                array[0] += 100;
+            }
+        }
+
+        // Демонстрація різниці між передаванням значимого типу та масиву
+        static void RunReferenceDemo()
+        {
+            Console.WriteLine("=== Демонстрація: значимий тип (int) vs посилальний (масив) ===");
+
+            int value = 15;
+            Console.WriteLine($"int до виклику TryChangeInt:        {value}");
+            TryChangeInt(value);
+            Console.WriteLine($"int після виклику TryChangeInt:     {value} (не змінився, бо передана копія)");
+
+            Console.WriteLine();
+
+            double[] demoArray = { 15.0, 25.0, 35.0 };
+            Console.WriteLine($"array[0] до виклику ChangeFirstElement:    {demoArray[0]:F1}");
+            ChangeFirstElement(demoArray);
+            Console.WriteLine($"array[0] після виклику ChangeFirstElement: {demoArray[0]:F1} (змінився, бо передано посилання)");
         }
 
         // Повідомлення про невірний вибір

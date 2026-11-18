@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 
 namespace Polyclinic
@@ -12,6 +11,10 @@ namespace Polyclinic
             Console.OutputEncoding = Encoding.UTF8;
             Console.InputEncoding = Encoding.UTF8;
 
+            const int Capacity = 100;
+            double[] values = new double[Capacity];
+            int count = 0;
+
             bool running = true;
             while (running)
             {
@@ -21,8 +24,12 @@ namespace Polyclinic
 
                 switch (choice)
                 {
-                    case "1": ShowStub(); Pause(); break;
-                    case "2": ShowStub(); Pause(); break;
+                    case "1": PrintValues(values, count); Pause(); break;
+                    case "2":
+                        double newValue = ReadDouble("Введіть тривалість прийому (хв, 1..240): ", 1, 240);
+                        AddValue(values, ref count, newValue, Capacity);
+                        Pause();
+                        break;
                     case "3": ShowAbout(); Pause(); break;
                     case "4": ShowCostTable(); Pause(); break;
                     case "5": ShowWorkloadTable(); Pause(); break;
@@ -37,8 +44,8 @@ namespace Polyclinic
         {
             Console.WriteLine("=== Поліклініка ===");
             Console.WriteLine("Користувач: реєстратор_1");
-            Console.WriteLine("1 — показати всі талони (буде пізніше)");
-            Console.WriteLine("2 — додати новий талон (буде пізніше)");
+            Console.WriteLine("1 — показати всі значення (час прийому, хв)");
+            Console.WriteLine("2 — додати значення");
             Console.WriteLine("3 — довідка про програму");
             Console.WriteLine("4 — табулювання показників (таблиця)");
             Console.WriteLine("5 — зведена таблиця талонів за спеціальностями та днями");
@@ -46,10 +53,37 @@ namespace Polyclinic
             Console.Write("Ваш вибір: ");
         }
 
-        // Повідомлення для пунктів меню в розробці
-        static void ShowStub()
+        // Додавання значення до масиву зі зміною лічильника через ref
+        static void AddValue(double[] values, ref int count, double newValue, int capacity)
         {
-            Console.WriteLine("Цей пункт з'явиться в наступних лабораторних роботах.");
+            if (count >= capacity)
+            {
+                Console.WriteLine("Масив заповнений, місця більше немає.");
+                return;
+            }
+
+            values[count] = newValue;
+            count++;
+            Console.WriteLine($"Значення {newValue:F1} додано. Усього записів: {count}.");
+        }
+
+        // Виведення вмісту масиву до count таблицею з номерами
+        static void PrintValues(double[] values, int count)
+        {
+            if (count <= 0)
+            {
+                Console.WriteLine("Масив порожній.");
+                return;
+            }
+
+            Console.WriteLine("=== Збережені значення (час прийому, хв) ===");
+            Console.WriteLine($"{"№",-6}{"Значення",12}");
+            Console.WriteLine(new string('-', 18));
+
+            for (int i = 0; i < count; i++)
+            {
+                Console.WriteLine($"{i + 1,-6}{values[i],12:F1}");
+            }
         }
 
         // Повідомлення про невірний вибір
@@ -67,6 +101,7 @@ namespace Polyclinic
         // Пауза перед очищенням екрана
         static void Pause()
         {
+            if (Console.IsInputRedirected) return;
             Console.WriteLine("\nНатисніть будь-яку клавішу для продовження...");
             Console.ReadKey(true);
             Console.Clear();
